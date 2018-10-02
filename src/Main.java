@@ -24,6 +24,7 @@ public class Main extends PApplet {
     Day seventeenth;
     boolean drawPie = true;
     MyRoutine myRoutine;
+    Day day;
 
     public void settings() {
         size(700, 600);
@@ -31,7 +32,8 @@ public class Main extends PApplet {
         //seventeenth = new Day("17-09-2018", this);
 
         String folder = "E:\\Programs\\Java\\Random Programs\\ActivityTracker\\data";
-        Day day = new Day("16-09-2018", this);
+        day = new Day("16-09-2018", this);
+
 //        myRoutine = new MyRoutine(folder, this);
 
         /*
@@ -61,7 +63,32 @@ public class Main extends PApplet {
         }*/
     }
 
-
+    public void draw() {
+        background(0);
+        day.makePieChart("low");
+        //myRoutine.drawPieChartForMonth("August");
+        /*if (drawPie)
+            myRoutine.drawPieChartForDate("16-09-2018", "high");
+        else*/
+//        myRoutine.drawPieChartForDate("16-09-2018", "low");
+        /*background(0);
+//        ellipse(mouseX, mouseY, 20, 20);
+        stroke(255);
+        //fill(255, 0, 0);
+        //arc(100, 100, 100, 100, 0, PI, PIE);
+        float previous = 0;
+        for (int i = 0; i < stats.length; i++) {
+            float factor = (float) stats[i] / sum;
+            int fillColor = getColor(i);
+            fill(fillColor);
+            arc(100, 100, 100, 100, previous, previous + factor*TWO_PI, PIE);
+            previous += factor * TWO_PI;
+        }*/
+        //seventeenth.makePieChart();
+        /*if (drawPie) {
+            seventeenth.makePieChart();
+        }*/
+    }
 
 
 
@@ -101,31 +128,7 @@ public class Main extends PApplet {
         }
     }
 
-    public void draw() {
-        background(0);
-        //myRoutine.drawPieChartForMonth("August");
-        /*if (drawPie)
-            myRoutine.drawPieChartForDate("16-09-2018", "high");
-        else*/
-//        myRoutine.drawPieChartForDate("16-09-2018", "low");
-        /*background(0);
-//        ellipse(mouseX, mouseY, 20, 20);
-        stroke(255);
-        //fill(255, 0, 0);
-        //arc(100, 100, 100, 100, 0, PI, PIE);
-        float previous = 0;
-        for (int i = 0; i < stats.length; i++) {
-            float factor = (float) stats[i] / sum;
-            int fillColor = getColor(i);
-            fill(fillColor);
-            arc(100, 100, 100, 100, previous, previous + factor*TWO_PI, PIE);
-            previous += factor * TWO_PI;
-        }*/
-        //seventeenth.makePieChart();
-        /*if (drawPie) {
-            seventeenth.makePieChart();
-        }*/
-    }
+
 
 
     public void keyPressed() {

@@ -141,6 +141,7 @@ public class Day {
             case "high":
                 colors = new int[stats.size()];
                 break;
+
             case "low":
                 int size = 0;
                 for (Integer[] s : stats) {
@@ -148,6 +149,7 @@ public class Day {
                 }
                 colors = new int[size];
                 break;
+
             default:
                 System.out.println("Bad option for the level");
                 return null;
@@ -159,28 +161,61 @@ public class Day {
         return colors;
     }
 
-    private int[] getStats(String option) {
-        int[] statsArray;
+    private Integer[] getStats(String option) {
+        Integer[] statsArray;
         switch (option) {
             case "high":
-                statsArray = new int[stats.size()];
+                statsArray = new Integer[stats.size()];
                 for (int i = 0; i < statsArray.length; i++) {
                     statsArray[i] = stats.get(i)[0];
                 }
                 return statsArray;
+
             case "low":
                 int size = 0;
                 for (Integer[] s : stats) {
                     size += s.length - 1;
                 }
-                statsArray = new int[size];
+                statsArray = new Integer[size];
                 int k = 0;
                 for (Integer[] s : stats) {
-                    for (int i = 0; i < s.length; i++, k++) {
+                    for (int i = 1; i < s.length; i++, k++) {
                         statsArray[k] = s[i];
                     }
                 }
                 return statsArray;
+
+            default:
+                System.out.println("Bad option for the level");
+                return null;
+        }
+    }
+
+    private String[] getLabels(String option) {
+        String[] labels;
+        switch (option) {
+            case "high":
+                labels = new String[classes.size()];
+                int i = 0;
+                for (String[] s: classes) {
+                    labels[i++] = s[0];
+                }
+                return labels;
+
+            case "low":
+                int size = 0;
+                for (String[] s : classes) {
+                    size += s.length - 1;
+                }
+                labels = new String[size];
+                int k = 0;
+                for (String[] s : classes) {
+                    for (int j = 1; j < s.length; j++, k++) {
+                        labels[k] = s[j];
+                    }
+                }
+                return labels;
+
             default:
                 System.out.println("Bad option for the level");
                 return null;
@@ -192,26 +227,13 @@ public class Day {
         int centerY = pAppletObj.height / 2;
 
         int[] colors = getColors(option);
-        int[] statArray = getStats(option);
-
-/*
-        int[] colors = new int[]{
-                 pAppletObj.color(197, 204, 20),
-                 pAppletObj.color(32, 41, 158),
-                 pAppletObj.color(148, 47, 131),
-                 pAppletObj.color(87, 0, 82),
-                 pAppletObj.color(200, 169, 177)
-        };
-        PieChart.draw(stats, colors, radius, centerX, centerY, pAppletObj);
-        PieChart.drawOutline(centerX, centerY, radius, pAppletObj.color(255,255,255), 4, pAppletObj);
-        String[] classLabels = new String[] {
-                "Sleep",
-                "Productive",
-                "Unproductive",
-                "Social",
-                "Necessities"
-        };
-        PieChart.label(stats, classLabels, centerX, centerY, radius, pAppletObj.color(255, 0, 0), pAppletObj.color(0, 0, 255),6, 20, pAppletObj);*/
+        Integer[] statArray = getStats(option);
+        String[] labels = getLabels(option);
+        if (statArray != null && colors != null && labels != null) {
+            PieChart.draw(statArray, colors, radius, centerX, centerY, pAppletObj);
+            PieChart.drawOutline(centerX, centerY, radius, pAppletObj.color(255,255,255), 4, pAppletObj);
+            PieChart.label(statArray, labels, centerX, centerY, radius, pAppletObj.color(255, 0, 0), pAppletObj.color(0, 0, 255),6, 20, pAppletObj);
+        }
     }
 
 
