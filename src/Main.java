@@ -64,7 +64,7 @@ public class Main extends PApplet {
     }
 
     public void draw() {
-        background(0);
+        background(50);
         day.makePieChart("low");
         //myRoutine.drawPieChartForMonth("August");
         /*if (drawPie)

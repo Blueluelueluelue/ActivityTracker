@@ -5,13 +5,13 @@ import processing.data.TableRow;
 import java.util.*;
 
 public class Day {
+
     private String date;
     private String[] activities;
     private ArrayList<Integer[]> stats;
     private PApplet pAppletObj;
     private ArrayList<String[]> classes;
     private final int NUM_TIMESLOTS = 48;
-    private final int IS_A_CLASS = -1;
     private int radius;
 
     public String getDate() {
@@ -70,6 +70,8 @@ public class Day {
             }
             if (task.length > 1) {
                 subTasks.add(task[1]);
+            } else {
+                subTasks.add(task[0]);
             }
             classMap.put(task[0], subTasks);
         }
@@ -109,7 +111,11 @@ public class Day {
                 stats.get(indices[0])[indices[1]]++;
             }
         }
-
+        for (Integer[] s: stats) {
+            if (s[1] == 0) {
+                s[1] = s[0];
+            }
+        }
     }
 
 
@@ -231,96 +237,9 @@ public class Day {
         String[] labels = getLabels(option);
         if (statArray != null && colors != null && labels != null) {
             PieChart.draw(statArray, colors, radius, centerX, centerY, pAppletObj);
-            PieChart.drawOutline(centerX, centerY, radius, pAppletObj.color(255,255,255), 4, pAppletObj);
-            PieChart.label(statArray, labels, centerX, centerY, radius, pAppletObj.color(255, 0, 0), pAppletObj.color(0, 0, 255),6, 20, pAppletObj);
+            PieChart.drawOutline(centerX, centerY, radius, pAppletObj.color(230, 230, 230), 4, pAppletObj);
+            PieChart.label(statArray, labels, centerX, centerY, radius, pAppletObj.color(255, 0, 0), pAppletObj.color(210, 210, 210),3, 16, pAppletObj);
         }
     }
 
-
-    /*public void makeLowLevelPieChart() {
-        pAppletObj.background(200, 200, 200);
-        int centerX = pAppletObj.width / 2;
-        int centerY = pAppletObj.height / 2;
-
-        int sum = 0;
-        for (Integer[] low: lowLevelStats) {
-            sum += low.length;
-            if (low.length != 1) {
-                sum--;
-            }
-        }
-        Integer[] lowLevelStats = new Integer[sum];
-        int k = 0;
-        for (Integer[] low: this.lowLevelStats) {
-            for (int i = (low.length == 1) ? 0 : 1; i < low.length; i++, k++) {
-                lowLevelStats[k] = low[i];
-            }
-        }
-
-        int[] colors = new int[] {
-                 pAppletObj.color(197, 204, 20),
-                 pAppletObj.color(59, 88, 161),
-                 pAppletObj.color(197, 70, 142),
-                 pAppletObj.color(204, 203, 117),
-                 pAppletObj.color(119, 76, 123),
-                 pAppletObj.color(156, 71, 198),
-                 pAppletObj.color(72,109,180),
-                 pAppletObj.color(83,249,219),
-                 pAppletObj.color(87,122,214),
-                 pAppletObj.color(249,22,136),
-                 pAppletObj.color(8,172,200),
-                 pAppletObj.color(102,64,139),
-                 pAppletObj.color(75,20,7)
-        };
-        PieChart.draw(lowLevelStats, colors, radius, centerX, centerY, pAppletObj);
-        PieChart.drawOutline(centerX, centerY, radius, pAppletObj.color(255, 255, 255), 4, pAppletObj);
-        String[] subClassLabels = new String[] {
-                "Sleep",
-                "Study",
-                "Exercise",
-                "Project",
-                "Practice",
-                "Games",
-                "Videos",
-                "Sports",
-                "Meet friends",
-                "Family stuff",
-                "Eat",
-                "Hygiene",
-                "Chores"
-        };
-        PieChart.label(lowLevelStats, subClassLabels, centerX, centerY, radius, pAppletObj.color(0, 0, 255), pAppletObj.color(255, 0, 0), 4, 20, pAppletObj);
-    }*/
-
-
-    private int getSubClassColor(int index) {
-        switch(index) {
-            case 2:
-                return pAppletObj.color(59, 88, 161);
-            case 3:
-                return pAppletObj.color(197, 70, 142);
-            case 4:
-                return pAppletObj.color(204, 203, 117);
-            case 5:
-                return pAppletObj.color(119, 76, 123);
-            case 7:
-                return pAppletObj.color(156, 71, 198);
-            case 8:
-                return pAppletObj.color(72,109,180);
-            case 9:
-                return pAppletObj.color(83,249,219);
-            case 11:
-                return pAppletObj.color(87,122,214);
-            case 12:
-                return pAppletObj.color(249,22,136);
-            case 14:
-                return pAppletObj.color(8,172,200);
-            case 15:
-                return pAppletObj.color(102,64,139);
-            case 16:
-                return pAppletObj.color(75,20,7);
-            default:
-                return pAppletObj.color(0, 0, 0);
-        }
-    }
 }

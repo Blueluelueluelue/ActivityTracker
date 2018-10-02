@@ -20,7 +20,6 @@ public class ColorGenerator {
         colorList.add(pAppletObj.color(148, 47, 131));
         colorList.add(pAppletObj.color(87, 0, 82));
         colorList.add(pAppletObj.color(200, 169, 177));
-        colorList.add(pAppletObj.color(197, 204, 20));
         colorList.add(pAppletObj.color(59, 88, 161));
         colorList.add(pAppletObj.color(197, 70, 142));
         colorList.add(pAppletObj.color(204, 203, 117));
