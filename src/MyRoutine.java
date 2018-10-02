@@ -11,7 +11,7 @@ public class MyRoutine {
     private ArrayList<Month> allMonths;
     private ArrayList<Day> allDays;
 
-    public MyRoutine(String folderName, PApplet pAppletObj) {
+    /*public MyRoutine(String folderName, PApplet pAppletObj) {
         this.pAppletObj = pAppletObj;
         final File folder = new File(folderName);
         allDayDates = new ArrayList<>();
@@ -20,16 +20,16 @@ public class MyRoutine {
         populateDays();
         allMonths = new ArrayList<>();
         populateMonths();
-    }
+    }*/
 
-    private void populateMonths() {
+    /*private void populateMonths() {
         for (int i = 1; i <= 12; i++) {
             Month m = new Month(i, allDays, pAppletObj);
             if (m.hasData()) {
                 allMonths.add(m);
             }
         }
-    }
+    }*/
 
     public void drawPieChartForMonth(String monthName) {
         for (Month month: allMonths) {
@@ -39,7 +39,7 @@ public class MyRoutine {
         }
     }
 
-    public void drawPieChartForDate(String date, String level) {
+    /*public void drawPieChartForDate(String date, String level) {
         int monthNumber = Integer.parseInt(date.substring(3, 5));
         for (Month month: allMonths) {
             if (month.getMonthNumber() == monthNumber) {
@@ -47,7 +47,7 @@ public class MyRoutine {
                 break;
             }
         }
-    }
+    }*/
 
     private void populateDays() {
         for (String dayDate: allDayDates) {

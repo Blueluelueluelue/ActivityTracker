@@ -31,7 +31,8 @@ public class Main extends PApplet {
         //seventeenth = new Day("17-09-2018", this);
 
         String folder = "E:\\Programs\\Java\\Random Programs\\ActivityTracker\\data";
-        myRoutine = new MyRoutine(folder, this);
+        Day day = new Day("16-09-2018", this);
+//        myRoutine = new MyRoutine(folder, this);
 
         /*
         populateFiles(folder);
@@ -101,11 +102,12 @@ public class Main extends PApplet {
     }
 
     public void draw() {
+        background(0);
         //myRoutine.drawPieChartForMonth("August");
         /*if (drawPie)
             myRoutine.drawPieChartForDate("16-09-2018", "high");
         else*/
-        myRoutine.drawPieChartForDate("16-09-2018", "low");
+//        myRoutine.drawPieChartForDate("16-09-2018", "low");
         /*background(0);
 //        ellipse(mouseX, mouseY, 20, 20);
         stroke(255);

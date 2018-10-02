@@ -2,14 +2,13 @@ import processing.core.PApplet;
 import processing.data.Table;
 import processing.data.TableRow;
 
-import java.util.ArrayList;
+import java.util.*;
 
 public class Day {
     private Table today;
     private String date;
     private String[] activities;
-    private Integer[] stats;
-    private ArrayList<Integer[]> lowLevelStats;
+    private ArrayList<Integer[]> stats;
     private PApplet pAppletObj;
     private ArrayList<String[]> classes;
     private final int NUM_TIMESLOTS = 48;
@@ -20,7 +19,7 @@ public class Day {
         return date;
     }
 
-    public Integer[] getStats() {
+    public ArrayList<Integer[]> getStats() {
         return stats;
     }
 
@@ -28,9 +27,10 @@ public class Day {
         pAppletObj = pApplet;
         this.date = date;
         initializeTable();
-        initializeClasses();
         initializeActivities();
-        initializeStats();
+        initializeClasses();
+
+        //initializeStats();
         radius = PApplet.floor((float) ((pAppletObj.width < pAppletObj.height ? pAppletObj.width : pAppletObj.height) / 1.5)) / 2;
     }
 
@@ -39,15 +39,42 @@ public class Day {
     }
 
     private void initializeClasses() {
+        Map<String, HashSet<String>> classMap = new HashMap<>();
         classes = new ArrayList<>();
-        classes.add(new String[]{"sleep"});
+        /*classes.add(new String[]{"sleep"});
         classes.add(new String[]{"productive", "study", "exercise", "project", "practice"});
         classes.add(new String[]{"unproductive", "games", "videos", "sports"});
         classes.add(new String[]{"social", "meet friends", "family stuff"});
-        classes.add(new String[]{"necessities", "eat", "hygiene", "chores"});
+        classes.add(new String[]{"necessities", "eat", "hygiene", "chores"});*/
+        String[] task;
+        for (String activity: activities) {
+            task = activity.split("\\|");
+            HashSet<String> subTasks = new HashSet<>();
+
+            if (classMap.containsKey(task[0])) {
+                subTasks = classMap.get(task[0]);
+            }
+            if (task.length > 1) {
+                subTasks.add(task[1]);
+            }
+            classMap.put(task[0], subTasks);
+        }
+        for (String theClass: classMap.keySet()) {
+            HashSet<String> subClasses = classMap.get(theClass);
+            int length = subClasses.size() + 1;
+            String[] fullClass = new String[length];
+            fullClass[0] = theClass;
+            Iterator<String> iterator = subClasses.iterator();
+            int i = 1;
+            while (iterator.hasNext() && i < fullClass.length) {
+                fullClass[i] = iterator.next();
+                i++;
+            }
+            classes.add(fullClass);
+        }
     }
 
-    private void initializeStats() {
+    /*private void initializeStats() {
         if (activities == null) {
             System.out.println("The activities array hasn't been initialized");
             return;
@@ -83,7 +110,7 @@ public class Day {
                 System.out.println("There's some problem in the data of date " + date);
             }
         }
-    }
+    }*/
 
     private int getSubClassNumber(String theSubClass) {
         for (String[] category: classes) {
@@ -138,7 +165,7 @@ public class Day {
         }
     }
 
-    public void makePieChart() {
+   /* public void makePieChart() {
         int centerX = pAppletObj.width / 2;
         int centerY = pAppletObj.height / 2;
 
@@ -159,10 +186,10 @@ public class Day {
                 "Necessities"
         };
         PieChart.label(stats, classLabels, centerX, centerY, radius, pAppletObj.color(255, 0, 0), pAppletObj.color(0, 0, 255),6, 20, pAppletObj);
-    }
+    }*/
 
 
-    public void makeLowLevelPieChart() {
+    /*public void makeLowLevelPieChart() {
         pAppletObj.background(200, 200, 200);
         int centerX = pAppletObj.width / 2;
         int centerY = pAppletObj.height / 2;
@@ -215,7 +242,7 @@ public class Day {
                 "Chores"
         };
         PieChart.label(lowLevelStats, subClassLabels, centerX, centerY, radius, pAppletObj.color(0, 0, 255), pAppletObj.color(255, 0, 0), 4, 20, pAppletObj);
-    }
+    }*/
 
 
     private int getSubClassColor(int index) {

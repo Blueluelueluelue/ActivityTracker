@@ -9,7 +9,7 @@ public class Month {
     private PApplet pAppletObj;
     private Integer[] monthStats;
 
-    public Month(int monthNumber, ArrayList<Day> allDays, PApplet pAppletObj) {
+    /*public Month(int monthNumber, ArrayList<Day> allDays, PApplet pAppletObj) {
         this.pAppletObj = pAppletObj;
         this.monthNumber = monthNumber;
         monthName = getMonthName(monthNumber);
@@ -22,7 +22,7 @@ public class Month {
         if (hasData()) {
             populateStats();
         }
-    }
+    }*/
 
     public int getMonthNumber() {
         return monthNumber;
@@ -60,7 +60,7 @@ public class Month {
         }
     }
 
-    private void populateStats() {
+    /*private void populateStats() {
 
         Day day1 = daysInThisMonth.get(0);
         Integer[] day1Stats = day1.getStats();
@@ -74,7 +74,7 @@ public class Month {
                 monthStats[classNum] += dayStats[classNum];
             }
         }
-    }
+    }*/
 
     private void populateWith(Integer[] arr, int num) {
         for (int i = 0; i < arr.length; i++) {
@@ -114,7 +114,7 @@ public class Month {
         PieChart.label(monthStats, classLabels, centerX, centerY, radius, pAppletObj.color(0, 0, 255), pAppletObj.color(0, 0, 255), 6, 20,  pAppletObj);
     }
 
-    public void makePieChartForDate(String date, String level) {
+    /*public void makePieChartForDate(String date, String level) {
         for (Day day: daysInThisMonth) {
             if (day.getDate().equals(date)) {
                 if (level.equals("high")) {
@@ -127,5 +127,5 @@ public class Month {
                 break;
             }
         }
-    }
+    }*/
 }
