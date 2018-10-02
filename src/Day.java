@@ -5,7 +5,6 @@ import processing.data.TableRow;
 import java.util.*;
 
 public class Day {
-    private Table today;
     private String date;
     private String[] activities;
     private ArrayList<Integer[]> stats;
@@ -23,32 +22,47 @@ public class Day {
         return stats;
     }
 
-    public Day(String date, PApplet pApplet) {
-        pAppletObj = pApplet;
-        this.date = date;
-        initializeTable();
-        initializeActivities();
-        initializeClasses();
-
-        //initializeStats();
-        radius = PApplet.floor((float) ((pAppletObj.width < pAppletObj.height ? pAppletObj.width : pAppletObj.height) / 1.5)) / 2;
-    }
-
     public int getMonthNumber() {
         return Integer.parseInt(date.substring(3, 5));
     }
 
+    public Day(String date, PApplet pApplet) {
+        pAppletObj = pApplet;
+        this.date = date;
+        initializeActivities();
+        initializeClasses();
+        initializeStats();
+        radius = PApplet.floor((float) ((pAppletObj.width < pAppletObj.height ? pAppletObj.width : pAppletObj.height) / 1.5)) / 2;
+    }
+
+    private void initializeActivities() {
+        Table today;
+        if (date.length() == 0) {
+            System.out.println("Date is empty");
+            return;
+        }
+        String filePath = "E:\\Programs\\Java\\Random Programs\\ActivityTracker\\data\\";
+        today = pAppletObj.loadTable(filePath + date + ".csv", "header");
+        if (today == null) {
+            System.out.println("The file of date " + date + " is not present in the data folder");
+            return;
+        }
+        today.trim();
+        activities = new String[today.getRowCount()];
+        int actNum = 0;
+        for (TableRow row : today.rows()) {
+            activities[actNum] = row.getString("activity");
+            actNum++;
+        }
+    }
+
+
     private void initializeClasses() {
         Map<String, HashSet<String>> classMap = new HashMap<>();
         classes = new ArrayList<>();
-        /*classes.add(new String[]{"sleep"});
-        classes.add(new String[]{"productive", "study", "exercise", "project", "practice"});
-        classes.add(new String[]{"unproductive", "games", "videos", "sports"});
-        classes.add(new String[]{"social", "meet friends", "family stuff"});
-        classes.add(new String[]{"necessities", "eat", "hygiene", "chores"});*/
         String[] task;
         for (String activity: activities) {
-            task = activity.split("\\|");
+            task = activity.split(" *\\| *");
             HashSet<String> subTasks = new HashSet<>();
 
             if (classMap.containsKey(task[0])) {
@@ -74,54 +88,30 @@ public class Day {
         }
     }
 
-    /*private void initializeStats() {
+    private void initializeStats() {
         if (activities == null) {
             System.out.println("The activities array hasn't been initialized");
             return;
         }
-        stats = new Integer[classes.size()];
-        lowLevelStats = new ArrayList<>();
-        for (String[] category: classes) {
-            Integer[] low = new Integer[category.length];
-            populateWith(low, 0);
-            lowLevelStats.add(low);
+        stats = new ArrayList<>();
+        for (String[] aClass : classes) {
+            Integer[] freq = new Integer[aClass.length];
+            populateWith(freq, 0);
+            stats.add(freq);
         }
-        populateWith(stats, 0);
-
         for (String activity: activities) {
-            String[] task = activity.split("\\|");
-            String theClass = task[0];
-            int classIndex = getClassNumber(theClass);
-            if (classIndex != -1) {
-                stats[classIndex]++;
-                if (task.length == 1) {
-                    lowLevelStats.get(classIndex)[0]++;
+            String[] task = activity.split(" *\\| *");
+            for (String aClass: task) {
+                int indices[] = getClassNumber(aClass);
+                if (indices[0] == -1 || indices[1] == -1) {
+                    System.out.println("There is a problem with the data in " + date);
                 }
-                for (int i = 1; i < task.length; i++) {
-                    String theSubClass = task[i];
-                    int subClassIndex = getSubClassNumber(theSubClass);
-                    if (subClassIndex != -1) {
-                        lowLevelStats.get(classIndex)[subClassIndex]++;
-                    } else {
-                        System.out.println("There's some problem in some of the subclasses of date " + date);
-                    }
-                }
-            } else {
-                System.out.println("There's some problem in the data of date " + date);
+                stats.get(indices[0])[indices[1]]++;
             }
         }
-    }*/
 
-    private int getSubClassNumber(String theSubClass) {
-        for (String[] category: classes) {
-            for (int j = 1; j < category.length; j++) {
-                if (category[j].equals(theSubClass)) {
-                    return j;
-                }
-            }
-        }
-        return  -1;
     }
+
 
     private void populateWith(Integer[] arr, int num) {
         for (int i = 0; i < arr.length; i++) {
@@ -129,41 +119,20 @@ public class Day {
         }
     }
 
-    private int getClassNumber(String className) {
+    private int[] getClassNumber(String className) {
+        int[] indices = new int[2];
         for (int i = 0; i < classes.size(); i++) {
-            if (className.equals(classes.get(i)[0])) {
-                return i;
+            for (int j = 0; j < classes.get(i).length; j++) {
+                if (className.equals(classes.get(i)[j])) {
+                    indices[0] = i;
+                    indices[1] = j;
+                    return indices;
+                }
             }
         }
-        return -1;
+        return new int[] {-1, -1};
     }
 
-    private void initializeActivities() {
-        if (today == null) {
-            System.out.println("The table for the csv file is not initialized");
-            return;
-        }
-        activities = new String[today.getRowCount()];
-        int actNum = 0;
-        for (TableRow row : today.rows()) {
-            activities[actNum] = row.getString("activity");
-            actNum++;
-        }
-
-    }
-
-    private void initializeTable() {
-        if (date.length() == 0) {
-            System.out.println("Date is empty");
-            return;
-        }
-        String filePath = "E:\\Programs\\Java\\Random Programs\\ActivityTracker\\data\\";
-        today = pAppletObj.loadTable(filePath + date + ".csv", "header");
-        today.trim();
-        if (today == null) {
-            System.out.println("The file of date " + date + " is not present in the data folder");
-        }
-    }
 
    /* public void makePieChart() {
         int centerX = pAppletObj.width / 2;
