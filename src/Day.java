@@ -134,10 +134,67 @@ public class Day {
     }
 
 
-   /* public void makePieChart() {
+    private int[] getColors(String option) {
+        ColorGenerator cg = new ColorGenerator(pAppletObj);
+        int[] colors;
+        switch (option) {
+            case "high":
+                colors = new int[stats.size()];
+                break;
+            case "low":
+                int size = 0;
+                for (Integer[] s : stats) {
+                    size += s.length - 1;
+                }
+                colors = new int[size];
+                break;
+            default:
+                System.out.println("Bad option for the level");
+                return null;
+        }
+
+        for (int i = 0; i < colors.length; i++) {
+            colors[i] = cg.nextColor();
+        }
+        return colors;
+    }
+
+    private int[] getStats(String option) {
+        int[] statsArray;
+        switch (option) {
+            case "high":
+                statsArray = new int[stats.size()];
+                for (int i = 0; i < statsArray.length; i++) {
+                    statsArray[i] = stats.get(i)[0];
+                }
+                return statsArray;
+            case "low":
+                int size = 0;
+                for (Integer[] s : stats) {
+                    size += s.length - 1;
+                }
+                statsArray = new int[size];
+                int k = 0;
+                for (Integer[] s : stats) {
+                    for (int i = 0; i < s.length; i++, k++) {
+                        statsArray[k] = s[i];
+                    }
+                }
+                return statsArray;
+            default:
+                System.out.println("Bad option for the level");
+                return null;
+        }
+    }
+
+    public void makePieChart(String option) {
         int centerX = pAppletObj.width / 2;
         int centerY = pAppletObj.height / 2;
 
+        int[] colors = getColors(option);
+        int[] statArray = getStats(option);
+
+/*
         int[] colors = new int[]{
                  pAppletObj.color(197, 204, 20),
                  pAppletObj.color(32, 41, 158),
@@ -154,8 +211,8 @@ public class Day {
                 "Social",
                 "Necessities"
         };
-        PieChart.label(stats, classLabels, centerX, centerY, radius, pAppletObj.color(255, 0, 0), pAppletObj.color(0, 0, 255),6, 20, pAppletObj);
-    }*/
+        PieChart.label(stats, classLabels, centerX, centerY, radius, pAppletObj.color(255, 0, 0), pAppletObj.color(0, 0, 255),6, 20, pAppletObj);*/
+    }
 
 
     /*public void makeLowLevelPieChart() {
