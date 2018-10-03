@@ -140,7 +140,7 @@ public class Day {
     }
 
 
-    private int[] getColors(String option) {
+    /*private int[] getColors(String option) {
         ColorGenerator cg = new ColorGenerator(pAppletObj);
         int[] colors;
         switch (option) {
@@ -163,6 +163,19 @@ public class Day {
 
         for (int i = 0; i < colors.length; i++) {
             colors[i] = cg.nextColor();
+        }
+        return colors;
+    }*/
+
+    private ArrayList<Integer[]> getColors() {
+        ArrayList<Integer[]> colors = new ArrayList<>();
+        ColorGenerator cg = new ColorGenerator(pAppletObj);
+        for (int i = 0; i < stats.size(); i++) {
+            Integer[] row = new Integer[stats.get(i).length];
+            for (int j = 0; j < stats.get(i).length; j++) {
+                row[j] = cg.nextColor();
+            }
+            colors.add(row);
         }
         return colors;
     }
@@ -228,18 +241,23 @@ public class Day {
         }
     }
 
-    public void makePieChart(String option) {
+    public void makePieChart(String...lowLeveleFor) {
         int centerX = pAppletObj.width / 2;
         int centerY = pAppletObj.height / 2;
 
-        int[] colors = getColors(option);
+        ArrayList<Integer[]> colors = getColors();
+
+        PieChart pieChart = new PieChart(stats, classes, centerX ,centerY, radius, colors, pAppletObj);
+        pieChart.draw(lowLeveleFor);
+
+        /*int[] colors = getColors(option);
         Integer[] statArray = getStats(option);
         String[] labels = getLabels(option);
         if (statArray != null && colors != null && labels != null) {
             PieChart.draw(statArray, colors, radius, centerX, centerY, pAppletObj);
             PieChart.drawOutline(centerX, centerY, radius, pAppletObj.color(230, 230, 230), 4, pAppletObj);
             PieChart.label(statArray, labels, centerX, centerY, radius, pAppletObj.color(255, 0, 0), pAppletObj.color(210, 210, 210),3, 16, pAppletObj);
-        }
+        }*/
     }
 
 }

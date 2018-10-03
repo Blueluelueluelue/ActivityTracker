@@ -90,7 +90,7 @@ public class Month {
         return monthName;
     }
 
-    public void makePieChart() {
+   /* public void makePieChart() {
         int[] colors = new int[]{
                 pAppletObj.color(197, 204, 20),
                 pAppletObj.color(32, 41, 158),
@@ -112,7 +112,7 @@ public class Month {
                 "Necessities"
         };
         PieChart.label(monthStats, classLabels, centerX, centerY, radius, pAppletObj.color(0, 0, 255), pAppletObj.color(0, 0, 255), 6, 20,  pAppletObj);
-    }
+    }*/
 
     /*public void makePieChartForDate(String date, String level) {
         for (Day day: daysInThisMonth) {

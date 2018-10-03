@@ -31,13 +31,13 @@ public class MyRoutine {
         }
     }*/
 
-    public void drawPieChartForMonth(String monthName) {
+    /*public void drawPieChartForMonth(String monthName) {
         for (Month month: allMonths) {
             if (monthName.equals(month.getMonthName())) {
                 month.makePieChart();
             }
         }
-    }
+    }*/
 
     /*public void drawPieChartForDate(String date, String level) {
         int monthNumber = Integer.parseInt(date.substring(3, 5));

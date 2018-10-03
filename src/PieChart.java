@@ -1,7 +1,89 @@
 import processing.core.PApplet;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 public class PieChart {
-    public static void draw(Integer[] numbers, int[] colors, int radius, int centerX, int centerY, PApplet pAppletObj) {
+
+    private ArrayList<Integer[]> numbers;
+    private ArrayList<String[]> labels;
+    private ArrayList<Integer[]> colors;
+    private int radius;
+    private PApplet pAppletObj;
+    private int centerX;
+    private int centerY;
+
+    public PieChart(ArrayList<Integer[]> numbers, ArrayList<String[]> labels, int centerX, int centerY, int radius, ArrayList<Integer[]> colors, PApplet pAppletObj) {
+        this.numbers = numbers;
+        this.labels = labels;
+        this.centerX = centerX;
+        this.centerY = centerY;
+        this.radius = radius;
+        this.colors = colors;
+        this.pAppletObj = pAppletObj;
+    }
+
+    private void print1(ArrayList<Integer[]> numbers) {
+        for (Integer[] num: numbers) {
+            System.out.println(Arrays.toString(num));
+        }
+    }
+
+    private void print2(ArrayList<String[]> numbers) {
+        for (String[] num: numbers) {
+            System.out.println(Arrays.toString(num));
+        }
+    }
+
+    public void draw(String...lowLevelFor) {
+        ArrayList<Integer> indices = new ArrayList<>();
+        for (String theClass: lowLevelFor) {
+            for (int i = 0; i < labels.size(); i++) {
+                if (theClass.equals(labels.get(i)[0])) {
+                    indices.add(i);
+                    break;
+                }
+            }
+        }
+        Integer sum = 0;
+        for (Integer[] num: numbers) {
+            sum += num[0];
+        }
+        pAppletObj.noStroke();
+        int diameter = radius * 2;
+        float previous = 0;
+        for (int i = 0; i < numbers.size(); i++) {
+            float factor = (float) numbers.get(i)[0] / sum;
+            int fillColor;
+            if (indices.contains(i)) {
+                Integer lowSum = 0;
+                for (int j = 1; j < numbers.get(i).length; j++) {
+                    lowSum += numbers.get(i)[j];
+                }
+                float lowFactor;
+                float lowPrevious = previous;
+                for (int j = 1; j < numbers.get(i).length; j++) {
+                    lowFactor = (float) numbers.get(i)[j] / lowSum;
+                    fillColor = colors.get(i)[j];
+                    pAppletObj.fill(fillColor);
+                    pAppletObj.strokeWeight(1);
+                    pAppletObj.arc(centerX, centerY, diameter, diameter, lowPrevious, lowPrevious + lowFactor*factor*pAppletObj.TWO_PI, pAppletObj.PIE);
+                    lowPrevious += lowFactor * factor * pAppletObj.TWO_PI;
+                }
+                previous = lowPrevious;
+            } else {
+                fillColor = colors.get(i)[0];
+                pAppletObj.fill(fillColor);
+                pAppletObj.strokeWeight(1);
+                pAppletObj.arc(centerX, centerY, diameter, diameter, previous, previous + factor*pAppletObj.TWO_PI, pAppletObj.PIE);
+                previous += factor * pAppletObj.TWO_PI;
+            }
+        }
+    }
+
+    
+    /*public static void draw(Integer[] numbers, int[] colors, int radius, int centerX, int centerY, PApplet pAppletObj) {
         Integer sum = 0;
         for (Integer num: numbers) {
             sum += num;
@@ -18,7 +100,7 @@ public class PieChart {
             previous += factor * pAppletObj.TWO_PI;
         }
     }
-
+*/
     public static void drawOutline(int centerX, int centerY, int radius, int color, int strokeWeight, PApplet pAppletObj) {
         pAppletObj.strokeWeight(strokeWeight);
         pAppletObj.stroke(color);
