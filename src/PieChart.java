@@ -73,4 +73,10 @@ public class PieChart {
 
         pAppletObj.text(label, showTextAtX, showTextAtY);
     }
+
+
+    public static boolean isInside(int centerX, int centerY, int radius, int pointX, int pointY) {
+        int distanceSquared = (int) (Math.pow(centerX - pointX, 2) + Math.pow(centerY - pointY, 2));
+        return distanceSquared < radius * radius;
+    }
 }
