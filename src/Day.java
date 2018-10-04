@@ -155,6 +155,11 @@ public class Day {
         }
     }
 
+    public void handleClick(int mouseX, int mouseY) {
+        String theClass = pieChart.clickedInsideClass(mouseX, mouseY);
+        pieChart.includeLowLevelClass(theClass);
+    }
+
 
     private void populateWith(Integer[] arr, int num) {
         for (int i = 0; i < arr.length; i++) {
@@ -177,8 +182,7 @@ public class Day {
     }
 
 
-    public void makePieChart(String...lowLevelFor) {
-        pieChart.draw(lowLevelFor);
+    public void makePieChart() {
+        pieChart.draw();
     }
-
 }

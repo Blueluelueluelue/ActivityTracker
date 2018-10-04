@@ -1,7 +1,6 @@
 import processing.core.PApplet;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class PieChart {
 
@@ -9,6 +8,7 @@ public class PieChart {
     private ArrayList<Integer[]> numbers;
     private ArrayList<String[]> labels;
     private ArrayList<Integer[]> colors;
+    private ArrayList<Integer> indicesTooShowLowLevelFor;
     private int radius;
     private int centerX;
     private int centerY;
@@ -27,31 +27,25 @@ public class PieChart {
         this.radius = radius;
         this.colors = colors;
         this.pAppletObj = pAppletObj;
+        this.indicesTooShowLowLevelFor = new ArrayList<>();
     }
 
-    private void print1(ArrayList<Integer[]> numbers) {
-        for (Integer[] num: numbers) {
-            System.out.println(Arrays.toString(num));
-        }
-    }
-
-    private void print2(ArrayList<String[]> numbers) {
-        for (String[] num: numbers) {
-            System.out.println(Arrays.toString(num));
-        }
-    }
-
-    private ArrayList<Integer> getLowLevelClassIndices(String...lowLevelFor) {
-        ArrayList<Integer> indices = new ArrayList<>();
-        for (String theClass: lowLevelFor) {
-            for (int i = 0; i < labels.size(); i++) {
-                if (theClass.equals(labels.get(i)[0])) {
-                    indices.add(i);
-                    break;
-                }
+    private Integer getLowLevelClassIndex(String lowLevelFor) {
+        for (int i = 0; i < labels.size(); i++) {
+            if (lowLevelFor.equals(labels.get(i)[0])) {
+                return i;
             }
         }
-        return indices;
+        return -1;
+    }
+
+    public void includeLowLevelClass(String lowLevelClass) {
+        Integer index = getLowLevelClassIndex(lowLevelClass);
+        if (indicesTooShowLowLevelFor.contains(index)) {
+            indicesTooShowLowLevelFor.remove(index);
+        } else {
+            indicesTooShowLowLevelFor.add(index);
+        }
     }
 
     private void drawArc(float start, float stop, int fillColor) {
@@ -60,10 +54,7 @@ public class PieChart {
         pAppletObj.arc(centerX, centerY, radius * 2, radius * 2, start, stop, pAppletObj.PIE);
     }
 
-    public void draw(String...lowLevelFor) {
-
-        // get the location of the classes, for which we have to display a low level view, from the labels
-        ArrayList<Integer> indices = getLowLevelClassIndices(lowLevelFor);
+    public void draw() {
 
         // calculate the high level total
         Integer sum = 0;
@@ -85,7 +76,7 @@ public class PieChart {
             // if the current class's index is inside the list of indices for which we have to display a low level view
             // then access that index's numbers and display the low level view for that class
             // else continue on with the high level view
-            if (indices.contains(i)) {
+            if (indicesTooShowLowLevelFor.contains(i)) {
 
                 // since the high level class's numbers, by definition, are the sum of the low level classes' numbers
                 Integer lowSum = numbers.get(i)[0];
@@ -120,7 +111,45 @@ public class PieChart {
 
         int lineColor = pAppletObj.color(0);
         int textColor = pAppletObj.color(230);
-        label(lineColor, 2, textColor, 18, indices);
+        label(lineColor, 2, textColor, 18, indicesTooShowLowLevelFor);
+    }
+
+    public String clickedInsideClass(int pointX, int pointY) {
+
+        if (PieChart.isInside(centerX, centerY, radius, pointX, pointY)) {
+
+            // calculate the high level total
+            Integer sum = 0;
+            for (Integer[] num: numbers) {
+                sum += num[0];
+            }
+
+            float previous = 0;
+            for (int i = 0; i < numbers.size(); i++) {
+                // get the high level percentage of the current stat
+                float factor = (float) numbers.get(i)[0] / sum;
+                if (intersects(pointX, pointY, previous, previous + factor * pAppletObj.TWO_PI)) {
+                    return labels.get(i)[0];
+                }
+                previous += factor * pAppletObj.TWO_PI;
+            }
+
+        }
+        return null;
+    }
+
+    public boolean intersects(int pointX, int pointY, float start, float stop) {
+        int translatedPointX = pointX - centerX;
+        int translatedPointY = pointY - centerY;
+        int startX = (int) (radius * Math.cos(start));
+        int startY = (int) (radius * Math.sin(start));
+        int stopX = (int) (radius * Math.cos(stop));
+        int stopY = (int) (radius * Math.sin(stop));
+        return (areClockwise(translatedPointX, translatedPointY, startX, startY) && !areClockwise(translatedPointX, translatedPointY, stopX, stopY));
+    }
+
+    private boolean areClockwise(int v1x, int v1y, int v2x, int v2y) {
+        return -v1x*v2y + v1y*v2x > 0;
     }
 
     private void drawOutline(int color, int strokeWeight) {
