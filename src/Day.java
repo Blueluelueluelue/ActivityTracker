@@ -14,38 +14,6 @@ public class Day {
     private String filePath;
     private PieChart pieChart;
 
-    public String getDate() {
-        return date;
-    }
-
-    public ArrayList<Integer[]> getStats() {
-        return stats;
-    }
-
-    public int getMonthNumber() {
-        return Integer.parseInt(date.substring(3, 5));
-    }
-
-    public ArrayList<String> getHighLevelClasses() {
-        ArrayList<String> list = new ArrayList<>();
-        for (String[] c: classes) {
-            list.add(c[0]);
-        }
-        return list;
-    }
-
-    public ArrayList<String> getLowLevelClasses(String forHighLevelClass) {
-        ArrayList<String> list = new ArrayList<>();
-        int[] indices = getClassNumber(forHighLevelClass);
-        int highLevelClassIndex = indices[0];
-        if (highLevelClassIndex != -1) {
-            for (int lowLevelClassIndex = 1; lowLevelClassIndex < classes.get(highLevelClassIndex).length; lowLevelClassIndex++) {
-                list.add(classes.get(highLevelClassIndex)[lowLevelClassIndex]);
-            }
-        }
-        return list;
-    }
-
     public Day(String date, String filePath, PApplet pApplet) {
         pAppletObj = pApplet;
         this.filePath = filePath;
@@ -60,8 +28,49 @@ public class Day {
         int radius = PApplet.floor((float) ((pAppletObj.width < pAppletObj.height ? pAppletObj.width : pAppletObj.height) / 1.5)) / 2;
 
         pieChart = new PieChart(stats, classes, centerX ,centerY, radius, colors, pAppletObj);
-
     }
+
+    public String getDate() {
+        return date;
+    }
+
+    public Integer getStatsOf(String className) {
+        // get the 2 indices since the classes are stored 2 dimensionally
+        int[] index = getClassNumber(className);
+
+        int i = index[0];
+        int j = index[1];
+
+        // return of -1 as an index means the specified className doesn't exist in the classes structure, so return 0
+        return i != -1 ? stats.get(i)[j] : 0;
+    }
+
+    public int getMonthNumber() {
+        String month = date.split("-")[1];
+        return Integer.parseInt(month);
+    }
+
+    public ArrayList<String> getHighLevelClasses() {
+        ArrayList<String> list = new ArrayList<>();
+        for (String[] c: classes) {
+            list.add(c[0]);
+        }
+        return list;
+    }
+
+    public ArrayList<String> getLowLevelClasses(String forHighLevelClass) {
+        ArrayList<String> list = new ArrayList<>();
+        int[] indices = getClassNumber(forHighLevelClass);
+        int highLevelClassIndex = indices[0];
+        
+        // index value of -1 means the specified class does not exist in classes structure, so we return an empty list
+        if (highLevelClassIndex != -1) {
+            list.addAll(Arrays.asList(classes.get(highLevelClassIndex)).subList(1, classes.get(highLevelClassIndex).length));
+        }
+        return list;
+    }
+
+
 
     private void initializeActivities() {
         Table today;
