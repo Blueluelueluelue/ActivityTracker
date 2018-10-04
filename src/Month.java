@@ -10,6 +10,7 @@ public class Month {
     private PApplet pAppletObj;
     private ArrayList<Integer[]> monthStats;
     private ArrayList<String[]> monthClasses;
+    PieChart pieChart;
 
     public Month(int monthNumber, ArrayList<String> allDates, String filePath, PApplet pAppletObj) {
         this.pAppletObj = pAppletObj;
@@ -23,6 +24,14 @@ public class Month {
 
         monthStats = new ArrayList<>();
         populateStats();
+
+        int centerX = pAppletObj.width / 2;
+        int centerY = pAppletObj.height / 2;
+        int radius = PApplet.floor((float) ((pAppletObj.width < pAppletObj.height ? pAppletObj.width : pAppletObj.height) / 1.5)) / 2;
+
+        ColorGenerator cg = new ColorGenerator(pAppletObj);
+        ArrayList<Integer[]> colors = cg.getColors(monthStats);
+        pieChart = new PieChart(monthStats, monthClasses, centerX, centerY, radius, colors, pAppletObj);
 
     }
 
@@ -146,6 +155,13 @@ public class Month {
             }
         }
     }*/
+
+    public void makePieChart(String...lowLevelFor) {
+        pieChart.draw(lowLevelFor);
+    }
+
+
+
 
     public boolean hasData() {
         return daysInThisMonth.size() > 0;
