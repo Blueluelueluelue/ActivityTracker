@@ -2,19 +2,24 @@ import processing.core.PApplet;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 public class PieChart {
 
+    private PApplet pAppletObj;
     private ArrayList<Integer[]> numbers;
     private ArrayList<String[]> labels;
     private ArrayList<Integer[]> colors;
     private int radius;
-    private PApplet pAppletObj;
     private int centerX;
     private int centerY;
 
-    public PieChart(ArrayList<Integer[]> numbers, ArrayList<String[]> labels, int centerX, int centerY, int radius, ArrayList<Integer[]> colors, PApplet pAppletObj) {
+    public PieChart(ArrayList<Integer[]> numbers,
+                    ArrayList<String[]> labels,
+                    int centerX,
+                    int centerY,
+                    int radius,
+                    ArrayList<Integer[]> colors,
+                    PApplet pAppletObj) {
         this.numbers = numbers;
         this.labels = labels;
         this.centerX = centerX;
@@ -36,7 +41,7 @@ public class PieChart {
         }
     }
 
-    public void draw(String...lowLevelFor) {
+    private ArrayList<Integer> getLowLevelClassIndices(String...lowLevelFor) {
         ArrayList<Integer> indices = new ArrayList<>();
         for (String theClass: lowLevelFor) {
             for (int i = 0; i < labels.size(); i++) {
@@ -46,62 +51,81 @@ public class PieChart {
                 }
             }
         }
+        return indices;
+    }
+
+    private void drawArc(float start, float stop, int fillColor) {
+        pAppletObj.fill(fillColor);
+        pAppletObj.strokeWeight(1);
+        pAppletObj.arc(centerX, centerY, radius * 2, radius * 2, start, stop, pAppletObj.PIE);
+    }
+
+    public void draw(String...lowLevelFor) {
+
+        // get the location of the classes, for which we have to display a low level view, from the labels
+        ArrayList<Integer> indices = getLowLevelClassIndices(lowLevelFor);
+
+        // calculate the high level total
         Integer sum = 0;
         for (Integer[] num: numbers) {
             sum += num[0];
         }
+
         pAppletObj.noStroke();
-        int diameter = radius * 2;
         float previous = 0;
         for (int i = 0; i < numbers.size(); i++) {
+            // get the high level percentage of the current stat
             float factor = (float) numbers.get(i)[0] / sum;
+
+            // calculate the slice the high level class occupies in the Pie
+            float slice = factor * pAppletObj.TWO_PI;
+
             int fillColor;
+
+            // if the current class's index is inside the list of indices for which we have to display a low level view
+            // then access that index's numbers and display the low level view for that class
+            // else continue on with the high level view
             if (indices.contains(i)) {
-                Integer lowSum = 0;
-                for (int j = 1; j < numbers.get(i).length; j++) {
-                    lowSum += numbers.get(i)[j];
-                }
+
+                // since the high level class's numbers, by definition, are the sum of the low level classes' numbers
+                Integer lowSum = numbers.get(i)[0];
                 float lowFactor;
+
+                // start drawing from where the high level left off
                 float lowPrevious = previous;
+
+
+
                 for (int j = 1; j < numbers.get(i).length; j++) {
+
+                    // get the low level percentage of the low level class
                     lowFactor = (float) numbers.get(i)[j] / lowSum;
+
                     fillColor = colors.get(i)[j];
-                    pAppletObj.fill(fillColor);
-                    pAppletObj.strokeWeight(1);
-                    pAppletObj.arc(centerX, centerY, diameter, diameter, lowPrevious, lowPrevious + lowFactor*factor*pAppletObj.TWO_PI, pAppletObj.PIE);
-                    lowPrevious += lowFactor * factor * pAppletObj.TWO_PI;
+                    drawArc(lowPrevious, lowPrevious + lowFactor * slice, fillColor);
+
+                    // update the low level previous so that the next iteration can start from where we left off.
+                    lowPrevious += lowFactor * slice;
                 }
+
+                // update the high level previous so that the next iteration can start from where we left off.
                 previous = lowPrevious;
             } else {
                 fillColor = colors.get(i)[0];
-                pAppletObj.fill(fillColor);
-                pAppletObj.strokeWeight(1);
-                pAppletObj.arc(centerX, centerY, diameter, diameter, previous, previous + factor*pAppletObj.TWO_PI, pAppletObj.PIE);
-                previous += factor * pAppletObj.TWO_PI;
+                drawArc(previous, previous + factor * pAppletObj.TWO_PI, fillColor);
+                // update previous so that the next iteration can start from where we left off.
+                previous += slice;
             }
         }
+
+        drawOutline(pAppletObj.color(200), 4);
+
+        int lineColor = pAppletObj.color(0);
+        int textColor = pAppletObj.color(230);
+        label(lineColor, 2, textColor, 18, indices);
     }
 
-    
-    /*public static void draw(Integer[] numbers, int[] colors, int radius, int centerX, int centerY, PApplet pAppletObj) {
-        Integer sum = 0;
-        for (Integer num: numbers) {
-            sum += num;
-        }
-        pAppletObj.noStroke();
-        int pieLength = radius * 2;
-        float previous = 0;
-        for (int i = 0; i < numbers.length; i++) {
-            float factor = (float) numbers[i] / sum;
-            int fillColor = colors[i];
-            pAppletObj.fill(fillColor);
-            pAppletObj.strokeWeight(1);
-            pAppletObj.arc(centerX, centerY, pieLength, pieLength, previous, previous + factor*pAppletObj.TWO_PI, pAppletObj.PIE);
-            previous += factor * pAppletObj.TWO_PI;
-        }
-    }
-*/
-    public static void drawOutline(int centerX, int centerY, int radius, int color, int strokeWeight, PApplet pAppletObj) {
+    private void drawOutline(int color, int strokeWeight) {
         pAppletObj.strokeWeight(strokeWeight);
         pAppletObj.stroke(color);
         pAppletObj.noFill();
@@ -109,51 +133,99 @@ public class PieChart {
         pAppletObj.noStroke();
     }
 
-    public static void label(Integer[] numbers, String[] labels, int centerX, int centerY, int radius, int lineColor, int textColor, int strokeWeight, int textSize, PApplet pAppletObj) {
-        if (numbers.length != labels.length) {
-            System.out.println("Number of labels and numbers don't match");
-            return;
-        }
-        pAppletObj.stroke(lineColor);
-        pAppletObj.strokeWeight(strokeWeight);
+    private void label(int lineColor,
+                       int strokeWeight,
+                       int textColor,
+                       int textSize,
+                       ArrayList<Integer> indices) {
+        // calculate the total of the high level classes' numbers
         Integer sum = 0;
-        for (Integer num: numbers) {
-            sum += num;
+        for (Integer[] num: numbers) {
+            sum += num[0];
         }
+
         float previous = 0;
         float theta;
-        float current;
-        Integer num;
-        for (int i = 0; i < numbers.length; i++) {
-            num = numbers[i];
-            if (num != 0) {
-                current = ((float) num / sum) * pAppletObj.TWO_PI;
-                theta = previous + (current / 2);
-                displayLabel(labels[i], theta, centerX, centerY, radius, lineColor, textColor, textSize, pAppletObj);
-                previous += current;
+        for (int i = 0; i < numbers.size(); i++) {
+            // get the high level percentage of the current stat
+            float factor = (float) numbers.get(i)[0] / sum;
+
+            // calculate the slice the high level class occupies in the Pie
+            float slice = factor * pAppletObj.TWO_PI;
+
+            // if the current class's index is inside the list of indices for which we have to label the low level
+            // then access that index's numbers and label the low level view for that class
+            // else continue on with the high level view
+            if (indices.contains(i)) {
+
+                // since the high level class's numbers, by definition, are the sum of the low level classes' numbers
+                Integer lowSum = numbers.get(i)[0];
+                float lowFactor;
+                float lowSlice;
+
+                // start drawing from where the high level left off
+                float lowPrevious = previous;
+
+                for (int j = 1; j < numbers.get(i).length; j++) {
+
+                    // get the low level percentage of the low level class
+                    lowFactor = (float) numbers.get(i)[j] / lowSum;
+
+                    // calculate the low level slice of the Pie
+                    lowSlice = lowFactor * slice;
+
+                    // calculate the angle at which the line gets displayed, which is in the middle of the slice
+                    theta = lowPrevious + lowSlice / 2;
+
+                    // display the label at theta
+                    displayLabel(labels.get(i)[j], theta, lineColor, strokeWeight, textSize, textColor);
+
+                    // update the low level previous so that the next iteration can start from where we left off.
+                    lowPrevious += lowSlice;
+                }
+
+                // update the high level previous so that the next iteration can start from where we left off.
+                previous = lowPrevious;
+            } else {
+                // calculate the angle at which the line gets displayed, which is in the middle of the slice
+                theta = previous + slice / 2;
+
+                // display the label at theta
+                displayLabel(labels.get(i)[0], theta, lineColor, strokeWeight, textSize, textColor);
+
+                // update previous so that the next iteration can start from where we left off.
+                previous += slice;
             }
         }
-        pAppletObj.noStroke();
     }
 
-    private static void displayLabel(String label, float theta, int centerX, int centerY, int radius, int lineColor, int textColor, int textSize, PApplet pAppletObj) {
+    private void displayLabel(String label, float theta, int lineColor, int strokeWeight, int textSize,  int textColor) {
         double lineLength = radius * 1.25;
+
+        // the text must be displayed a bit beyond the end of the line
         double textDistance = radius * 1.45;
+
         int halfRadius = radius / 2;
 
+        // converting Polar to Cartesian
         int lineStartX = centerX + PApplet.floor((float) (halfRadius * Math.cos(theta)));
         int lineStartY = centerY + PApplet.floor((float) (halfRadius * Math.sin(theta)));
         int lineEndX = centerX + PApplet.floor((float) (lineLength * Math.cos(theta)));
         int lineEndY = centerY + PApplet.floor((float) (lineLength * Math.sin(theta)));
 
         pAppletObj.stroke(lineColor);
+        pAppletObj.strokeWeight(strokeWeight);
         pAppletObj.fill(textColor);
         pAppletObj.textSize(textSize);
-        pAppletObj.line(lineStartX, lineStartY, lineEndX, lineEndY);
+
         int showTextAtX = centerX + PApplet.floor((float) (textDistance * Math.cos(theta)));
         int showTextAtY = centerY + PApplet.floor((float) (textDistance * Math.sin(theta)));
 
+        pAppletObj.line(lineStartX, lineStartY, lineEndX, lineEndY);
         pAppletObj.text(label, showTextAtX, showTextAtY);
+
+        pAppletObj.noStroke();
+        pAppletObj.noFill();
     }
 
 
