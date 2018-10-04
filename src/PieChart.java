@@ -26,8 +26,18 @@ public class PieChart {
         this.centerY = centerY;
         this.radius = radius;
         this.colors = colors;
+        removeRepeatLabelsColors();
+
         this.pAppletObj = pAppletObj;
         this.indicesTooShowLowLevelFor = new ArrayList<>();
+    }
+
+    private void removeRepeatLabelsColors() {
+        for (int i = 0; i < colors.size(); i++) {
+            if (labels.get(i)[0].equals(labels.get(i)[1])) {
+                colors.get(i)[1] = colors.get(i)[0];
+            }
+        }
     }
 
     private Integer getLowLevelClassIndex(String lowLevelFor) {
