@@ -10,7 +10,6 @@ public class Day {
     private String[] activities;
     private ArrayList<Integer[]> stats;
     private ArrayList<String[]> classes;
-    private int radius;
     private PApplet pAppletObj;
     private String filePath;
     private PieChart pieChart;
@@ -27,6 +26,26 @@ public class Day {
         return Integer.parseInt(date.substring(3, 5));
     }
 
+    public ArrayList<String> getHighLevelClasses() {
+        ArrayList<String> list = new ArrayList<>();
+        for (String[] c: classes) {
+            list.add(c[0]);
+        }
+        return list;
+    }
+
+    public ArrayList<String> getLowLevelClasses(String forHighLevelClass) {
+        ArrayList<String> list = new ArrayList<>();
+        int[] indices = getClassNumber(forHighLevelClass);
+        int highLevelClassIndex = indices[0];
+        if (highLevelClassIndex != -1) {
+            for (int lowLevelClassIndex = 1; lowLevelClassIndex < classes.get(highLevelClassIndex).length; lowLevelClassIndex++) {
+                list.add(classes.get(highLevelClassIndex)[lowLevelClassIndex]);
+            }
+        }
+        return list;
+    }
+
     public Day(String date, String filePath, PApplet pApplet) {
         pAppletObj = pApplet;
         this.filePath = filePath;
@@ -38,7 +57,7 @@ public class Day {
         int centerX = pAppletObj.width / 2;
         int centerY = pAppletObj.height / 2;
         ArrayList<Integer[]> colors = getColors();
-        radius = PApplet.floor((float) ((pAppletObj.width < pAppletObj.height ? pAppletObj.width : pAppletObj.height) / 1.5)) / 2;
+        int radius = PApplet.floor((float) ((pAppletObj.width < pAppletObj.height ? pAppletObj.width : pAppletObj.height) / 1.5)) / 2;
 
         pieChart = new PieChart(stats, classes, centerX ,centerY, radius, colors, pAppletObj);
 
