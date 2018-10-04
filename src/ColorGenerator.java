@@ -39,4 +39,18 @@ public class ColorGenerator {
         return colorList.get(currentColor);
     }
 
+    public ArrayList<Integer[]> getColors(ArrayList<Integer[]> stats) {
+        ArrayList<Integer[]> colors = new ArrayList<>();
+        ColorGenerator cg = new ColorGenerator(pAppletObj);
+        for (Integer[] stat : stats) {
+            Integer[] row = new Integer[stat.length];
+            for (int j = 0; j < stat.length; j++) {
+                row[j] = cg.nextColor();
+            }
+            colors.add(row);
+        }
+        return colors;
+    }
+
+
 }

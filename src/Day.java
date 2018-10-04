@@ -24,7 +24,8 @@ public class Day {
 
         int centerX = pAppletObj.width / 2;
         int centerY = pAppletObj.height / 2;
-        ArrayList<Integer[]> colors = getColors();
+        ColorGenerator cg = new ColorGenerator(pAppletObj);
+        ArrayList<Integer[]> colors = cg.getColors(this.stats);
         int radius = PApplet.floor((float) ((pAppletObj.width < pAppletObj.height ? pAppletObj.width : pAppletObj.height) / 1.5)) / 2;
 
         pieChart = new PieChart(stats, classes, centerX ,centerY, radius, colors, pAppletObj);
@@ -62,7 +63,7 @@ public class Day {
         ArrayList<String> list = new ArrayList<>();
         int[] indices = getClassNumber(forHighLevelClass);
         int highLevelClassIndex = indices[0];
-        
+
         // index value of -1 means the specified class does not exist in classes structure, so we return an empty list
         if (highLevelClassIndex != -1) {
             list.addAll(Arrays.asList(classes.get(highLevelClassIndex)).subList(1, classes.get(highLevelClassIndex).length));
@@ -173,20 +174,6 @@ public class Day {
             }
         }
         return new int[] {-1, -1};
-    }
-
-
-    private ArrayList<Integer[]> getColors() {
-        ArrayList<Integer[]> colors = new ArrayList<>();
-        ColorGenerator cg = new ColorGenerator(pAppletObj);
-        for (int i = 0; i < stats.size(); i++) {
-            Integer[] row = new Integer[stats.get(i).length];
-            for (int j = 0; j < stats.get(i).length; j++) {
-                row[j] = cg.nextColor();
-            }
-            colors.add(row);
-        }
-        return colors;
     }
 
 
