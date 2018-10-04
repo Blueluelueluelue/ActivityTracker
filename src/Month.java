@@ -17,8 +17,12 @@ public class Month {
         this.monthName = getMonthName(monthNumber);
 
         populateDays(allDates, filePath);
+
         monthClasses = new ArrayList<>();
         populateClasses();
+
+        monthStats = new ArrayList<>();
+        populateStats();
 
     }
 
@@ -38,22 +42,32 @@ public class Month {
     }
 
     private void populateClasses() {
+        // using a HashSet because we want a list with only unique values for our classes list
         HashSet<String> highLevelClasses = new HashSet<>();
 
+        // get all the high level classes from all the days in this month and add them to the HashSet
         for (Day day: daysInThisMonth) {
             ArrayList<String> high = day.getHighLevelClasses();
             highLevelClasses.addAll(high);
         }
+
+        // same reason for using HashSet but since we want a different list for each high level class,
+        // we use a list to store the individual HashSets
         ArrayList<HashSet<String>> allLowLevelClasses = new ArrayList<>();
         for (String highLevelClass : highLevelClasses) {
             HashSet<String> set = new HashSet<>();
+            // get all the low level classes corresponding to each high level class and add them to the corresponding HashSet
+            // so repeat values get discarded
             for (Day day : daysInThisMonth) {
                 ArrayList<String> lowLevelClasses = day.getLowLevelClasses(highLevelClass);
                 set.addAll(lowLevelClasses);
             }
+            // then add them to the list
             allLowLevelClasses.add(set);
         }
 
+        // now that we have the list of unique classNames sorted according to their level and which
+        // class they are under we can populate the monthClasses list.
         int i = 0;
         for (String highLevelClass: highLevelClasses) {
             HashSet<String> set = allLowLevelClasses.get(i++);
@@ -64,6 +78,24 @@ public class Month {
                 row[j++] = lowLevelClass;
             }
             monthClasses.add(row);
+        }
+    }
+
+    private void populateStats() {
+        // go through all the classes
+        for (String[] monthClass : monthClasses) {
+            Integer[] row = new Integer[monthClass.length];
+            for (int j = 0; j < monthClass.length; j++) {
+                Integer sum = 0;
+                // get the number of occurrences of each class
+                for (Day day : daysInThisMonth) {
+                    sum += day.getStatsOf(monthClass[j]);
+                }
+                // add that to the row
+                row[j] = sum;
+            }
+            // add the row
+            monthStats.add(row);
         }
     }
 
@@ -114,12 +146,6 @@ public class Month {
             }
         }
     }*/
-
-    private void populateWith(Integer[] arr, int num) {
-        for (int i = 0; i < arr.length; i++) {
-            arr[i] = num;
-        }
-    }
 
     public boolean hasData() {
         return daysInThisMonth.size() > 0;
