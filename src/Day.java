@@ -9,10 +9,11 @@ public class Day {
     private String date;
     private String[] activities;
     private ArrayList<Integer[]> stats;
-    private PApplet pAppletObj;
     private ArrayList<String[]> classes;
-    private final int NUM_TIMESLOTS = 48;
     private int radius;
+    private PApplet pAppletObj;
+    private String filePath;
+    private PieChart pieChart;
 
     public String getDate() {
         return date;
@@ -26,13 +27,21 @@ public class Day {
         return Integer.parseInt(date.substring(3, 5));
     }
 
-    public Day(String date, PApplet pApplet) {
+    public Day(String date, String filePath, PApplet pApplet) {
         pAppletObj = pApplet;
+        this.filePath = filePath;
         this.date = date;
         initializeActivities();
         initializeClasses();
         initializeStats();
+
+        int centerX = pAppletObj.width / 2;
+        int centerY = pAppletObj.height / 2;
+        ArrayList<Integer[]> colors = getColors();
         radius = PApplet.floor((float) ((pAppletObj.width < pAppletObj.height ? pAppletObj.width : pAppletObj.height) / 1.5)) / 2;
+
+        pieChart = new PieChart(stats, classes, centerX ,centerY, radius, colors, pAppletObj);
+
     }
 
     private void initializeActivities() {
@@ -41,7 +50,6 @@ public class Day {
             System.out.println("Date is empty");
             return;
         }
-        String filePath = "E:\\Programs\\Java\\Random Programs\\ActivityTracker\\data\\";
         today = pAppletObj.loadTable(filePath + date + ".csv", "header");
         if (today == null) {
             System.out.println("The file of date " + date + " is not present in the data folder");
@@ -140,33 +148,6 @@ public class Day {
     }
 
 
-    /*private int[] getColors(String option) {
-        ColorGenerator cg = new ColorGenerator(pAppletObj);
-        int[] colors;
-        switch (option) {
-            case "high":
-                colors = new int[stats.size()];
-                break;
-
-            case "low":
-                int size = 0;
-                for (Integer[] s : stats) {
-                    size += s.length - 1;
-                }
-                colors = new int[size];
-                break;
-
-            default:
-                System.out.println("Bad option for the level");
-                return null;
-        }
-
-        for (int i = 0; i < colors.length; i++) {
-            colors[i] = cg.nextColor();
-        }
-        return colors;
-    }*/
-
     private ArrayList<Integer[]> getColors() {
         ArrayList<Integer[]> colors = new ArrayList<>();
         ColorGenerator cg = new ColorGenerator(pAppletObj);
@@ -182,12 +163,6 @@ public class Day {
 
 
     public void makePieChart(String...lowLevelFor) {
-        int centerX = pAppletObj.width / 2;
-        int centerY = pAppletObj.height / 2;
-
-        ArrayList<Integer[]> colors = getColors();
-
-        PieChart pieChart = new PieChart(stats, classes, centerX ,centerY, radius, colors, pAppletObj);
         pieChart.draw(lowLevelFor);
     }
 

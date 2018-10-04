@@ -94,8 +94,6 @@ public class PieChart {
                 // start drawing from where the high level left off
                 float lowPrevious = previous;
 
-
-
                 for (int j = 1; j < numbers.get(i).length; j++) {
 
                     // get the low level percentage of the low level class
