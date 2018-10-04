@@ -1,31 +1,70 @@
 import processing.core.PApplet;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 
 public class Month {
     private ArrayList<Day> daysInThisMonth;
     private String monthName;
     private int monthNumber;
     private PApplet pAppletObj;
-    private Integer[] monthStats;
+    private ArrayList<Integer[]> monthStats;
+    private ArrayList<String[]> monthClasses;
 
-    /*public Month(int monthNumber, ArrayList<Day> allDays, PApplet pAppletObj) {
+    public Month(int monthNumber, ArrayList<String> allDates, String filePath, PApplet pAppletObj) {
         this.pAppletObj = pAppletObj;
         this.monthNumber = monthNumber;
-        monthName = getMonthName(monthNumber);
-        daysInThisMonth = new ArrayList<>();
-        for (Day d: allDays) {
-            if (monthNumber == d.getMonthNumber()) {
-                daysInThisMonth.add(d);
-            }
-        }
-        if (hasData()) {
-            populateStats();
-        }
-    }*/
+        this.monthName = getMonthName(monthNumber);
+
+        populateDays(allDates, filePath);
+        monthClasses = new ArrayList<>();
+        populateClasses();
+
+    }
 
     public int getMonthNumber() {
         return monthNumber;
+    }
+
+    private void populateDays(ArrayList<String> allDates, String filePath) {
+        daysInThisMonth = new ArrayList<>();
+        for (String date: allDates) {
+            int monthInDate = Integer.parseInt(date.split("-")[1]);
+            if (monthInDate == monthNumber) {
+                Day day = new Day(date, filePath, pAppletObj);
+                daysInThisMonth.add(day);
+            }
+        }
+    }
+
+    private void populateClasses() {
+        HashSet<String> highLevelClasses = new HashSet<>();
+
+        for (Day day: daysInThisMonth) {
+            ArrayList<String> high = day.getHighLevelClasses();
+            highLevelClasses.addAll(high);
+        }
+        ArrayList<HashSet<String>> allLowLevelClasses = new ArrayList<>();
+        for (String highLevelClass : highLevelClasses) {
+            HashSet<String> set = new HashSet<>();
+            for (Day day : daysInThisMonth) {
+                ArrayList<String> lowLevelClasses = day.getLowLevelClasses(highLevelClass);
+                set.addAll(lowLevelClasses);
+            }
+            allLowLevelClasses.add(set);
+        }
+
+        int i = 0;
+        for (String highLevelClass: highLevelClasses) {
+            HashSet<String> set = allLowLevelClasses.get(i++);
+            String[] row = new String[set.size() + 1];
+            row[0] = highLevelClass;
+            int j = 1;
+            for (String lowLevelClass: set) {
+                row[j++] = lowLevelClass;
+            }
+            monthClasses.add(row);
+        }
     }
 
     private String getMonthName(int monthNumber) {
