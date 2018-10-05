@@ -4,21 +4,21 @@ public class Button {
     private PApplet pAppletObj;
     private int topLeftX;
     private int topLeftY;
-    private int bottomRightX;
-    private int bottomRightY;
+    private int width;
+    private int height;
     private int fillColor;
     private int borderColor;
     private int cornerRadius;
 
-    public Button(int x1, int y1, int x2, int y2, PApplet pAppletObj) {
+    public Button(int x1, int y1, int w, int h, PApplet pAppletObj) {
         this.pAppletObj = pAppletObj;
         topLeftX = x1;
         topLeftY = y1;
-        bottomRightX = x2;
-        bottomRightY = y2;
+        width = w;
+        height = h;
         fillColor = pAppletObj.color(220);
         borderColor = pAppletObj.color(0);
-        cornerRadius = PApplet.floor((0.2f * (x2 - x1)));
+        cornerRadius = PApplet.floor(0.2f * (w > h ? w : h));
     }
 
     public Button(int x1, int y1, int x2, int y2, int fillColor, int borderColor, PApplet pAppletObj) {
@@ -31,13 +31,13 @@ public class Button {
         pAppletObj.pushMatrix();
         pAppletObj.fill(fillColor);
         pAppletObj.stroke(borderColor);
-        pAppletObj.rect(topLeftX, topLeftY, bottomRightX, bottomRightY, cornerRadius);
+        pAppletObj.rect(topLeftX, topLeftY, width, height, cornerRadius);
         pAppletObj.popMatrix();
     }
 
     public boolean isInside(int pointX, int pointY) {
-        boolean xIsInside = pointX > topLeftX && pointX < bottomRightX + cornerRadius;
-        boolean yIsInside = pointY > topLeftY && pointY < bottomRightY + cornerRadius;
+        boolean xIsInside = pointX > topLeftX && pointX < topLeftX + width;
+        boolean yIsInside = pointY > topLeftY && pointY < topLeftY + height;
         return xIsInside && yIsInside;
     }
 }
