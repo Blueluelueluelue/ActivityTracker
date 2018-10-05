@@ -164,4 +164,12 @@ public class Month {
     public String getMonthName() {
         return monthName;
     }
+
+    public Day getDay(int index) {
+        return daysInThisMonth.get(index);
+    }
+
+    public boolean isLastDayOfMonth(int index) {
+        return index == daysInThisMonth.size() - 1;
+    }
 }
