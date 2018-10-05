@@ -155,6 +155,13 @@ public class Day {
         }
     }
 
+    private void displayDate() {
+        pAppletObj.pushMatrix();
+        pAppletObj.textSize(15);
+        pAppletObj.text(date, 50, 50);
+        pAppletObj.popMatrix();
+    }
+
     public void handleClick(int mouseX, int mouseY) {
         String theClass = pieChart.clickedInsideClass(mouseX, mouseY);
         pieChart.includeLowLevelClass(theClass);
@@ -181,8 +188,8 @@ public class Day {
         return new int[] {-1, -1};
     }
 
-
     public void makePieChart() {
         pieChart.draw();
+        displayDate();
     }
 }
