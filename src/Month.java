@@ -146,10 +146,9 @@ public class Month {
     }
 
     private void displayMonthName() {
-        pAppletObj.pushMatrix();
-        pAppletObj.textSize(15);
-        pAppletObj.text(monthName, 50, 50);
-        pAppletObj.popMatrix();
+        int x = (int) (pAppletObj.width * 0.05);
+        int y = (int) (pAppletObj.height * 0.05);
+        pieChart.displayString(monthName, x, y);
     }
 
     public void handleClick(int mouseX, int mouseY) {

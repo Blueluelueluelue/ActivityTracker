@@ -156,10 +156,9 @@ public class Day {
     }
 
     private void displayDate() {
-        pAppletObj.pushMatrix();
-        pAppletObj.textSize(15);
-        pAppletObj.text(date, 50, 50);
-        pAppletObj.popMatrix();
+        int x = (int) (pAppletObj.width * 0.05);
+        int y = (int) (pAppletObj.height * 0.05);
+        pieChart.displayString(date, x, y);
     }
 
     public void handleClick(int mouseX, int mouseY) {

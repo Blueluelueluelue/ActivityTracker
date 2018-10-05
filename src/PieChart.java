@@ -270,4 +270,11 @@ public class PieChart {
         int distanceSquared = (int) (Math.pow(centerX - pointX, 2) + Math.pow(centerY - pointY, 2));
         return distanceSquared < radius * radius;
     }
+
+    public void displayString(String string, int x, int y) {
+        pAppletObj.pushMatrix();
+        pAppletObj.textSize(15);
+        pAppletObj.text(string, x, y);
+        pAppletObj.popMatrix();
+    }
 }
