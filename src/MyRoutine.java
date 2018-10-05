@@ -1,94 +1,104 @@
 import processing.core.PApplet;
-import processing.data.Table;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Objects;
 
 public class MyRoutine {
+    private final int DAY_MODE = 0;
+    private final int MONTH_MODE = 1;
     private PApplet pAppletObj;
-    private ArrayList<String> allDayDates;
-    private ArrayList<Month> allMonths;
-    private ArrayList<Day> allDays;
+    private ArrayList<String> allDates;
+    private Month[] allMonths;
+    private String folderName;
+    private int mode;
+    private int dayIndex;
+    private int monthIndex;
 
-    /*public MyRoutine(String folderName, PApplet pAppletObj) {
+    public MyRoutine(String folderName, PApplet pAppletObj) {
+        this.folderName = folderName;
         this.pAppletObj = pAppletObj;
         final File folder = new File(folderName);
-        allDayDates = new ArrayList<>();
-        getFileNames(folder);
-        allDays = new ArrayList<>();
-        populateDays();
-        allMonths = new ArrayList<>();
+        allDates = new ArrayList<>();
+        getAllDates(folder);
+        allMonths = new Month[12];
         populateMonths();
-    }*/
-
-    /*private void populateMonths() {
-        for (int i = 1; i <= 12; i++) {
-            Month m = new Month(i, allDays, pAppletObj);
-            if (m.hasData()) {
-                allMonths.add(m);
-            }
-        }
-    }*/
-
-    /*public void drawPieChartForMonth(String monthName) {
-        for (Month month: allMonths) {
-            if (monthName.equals(month.getMonthName())) {
-                month.makePieChart();
-            }
-        }
-    }*/
-
-    /*public void drawPieChartForDate(String date, String level) {
-        int monthNumber = Integer.parseInt(date.substring(3, 5));
-        for (Month month: allMonths) {
-            if (month.getMonthNumber() == monthNumber) {
-                month.makePieChartForDate(date, level);
-                break;
-            }
-        }
-    }*/
-
-    private void populateDays() {
-        for (String dayDate: allDayDates) {
-            allDays.add(new Day(dayDate, pAppletObj));
+        mode = DAY_MODE;
+        dayIndex = 0;
+        monthIndex = 0;
+        while (!allMonths[monthIndex].hasData()) {
+            monthIndex = (monthIndex + 1) % allMonths.length;
         }
     }
 
-    private void getFileNames(final File folder) {
+    private void populateMonths() {
+        for (int i = 0; i < allMonths.length; i++) {
+            allMonths[i] = new Month(i+1, allDates, folderName, pAppletObj);
+        }
+    }
+
+    public void next() {
+        if (mode == DAY_MODE) {
+            if (allMonths[monthIndex].isLastDayOfMonth(dayIndex)) {
+                monthIndex = (monthIndex + 1) % allMonths.length;
+                while (!allMonths[monthIndex].hasData()) {
+                    monthIndex = (monthIndex + 1) % allMonths.length;
+                }
+                dayIndex = 0;
+            } else {
+                dayIndex++;
+            }
+        } else if (mode == MONTH_MODE) {
+            dayIndex = 0;
+            monthIndex = (monthIndex + 1) % allMonths.length;
+            while (!allMonths[monthIndex].hasData()) {
+                monthIndex = (monthIndex + 1) % allMonths.length;
+            }
+        }
+    }
+
+    public void changeMode() {
+        if (mode == DAY_MODE) {
+            mode = MONTH_MODE;
+        } else if (mode == MONTH_MODE) {
+            mode = DAY_MODE;
+        }
+    }
+
+    public void handleClick(int mouseX, int mouseY) {
+        switch (mode) {
+            case DAY_MODE:
+                allMonths[monthIndex].getDay(dayIndex).handleClick(mouseX, mouseY);
+                break;
+            case MONTH_MODE:
+                allMonths[monthIndex].handleClick(mouseX, mouseY);
+                break;
+        }
+    }
+
+    public void makePieChart() {
+        if (mode == DAY_MODE) {
+            if (allMonths[monthIndex].hasData()) {
+                allMonths[monthIndex].getDay(dayIndex).makePieChart();
+            }
+        } else if (mode == MONTH_MODE) {
+            if (allMonths[monthIndex].hasData()) {
+                allMonths[monthIndex].makePieChart();
+            }
+        }
+    }
+
+    private void getAllDates(final File folder) {
         for (final File fileEntry : Objects.requireNonNull(folder.listFiles())) {
             if (fileEntry.isDirectory()) {
-                getFileNames(fileEntry);
+                getAllDates(fileEntry);
             } else {
                 /*Table t = pAppletObj.loadTable(fileEntry.getName(), "header");
                 t.trim();*/
                 String fileName = fileEntry.getName();
-                fileName = fileName.substring(0, fileName.indexOf('.'));
-                allDayDates.add(fileName);
+                fileName = fileName.split("\\.")[0];
+                allDates.add(fileName);
             }
         }
     }
-    /*
-    public void populateActivities() {
-        allActivities = new ArrayList<>();
-        for (int i = 0; i < allFiles.size(); i++) {
-            Table file = allFiles.get(i);
-            String[] activities = new String[file.getRowCount()];
-            int actNum = 0;
-            for (TableRow row : file.rows()) {
-                activities[actNum] = row.getString("activity");
-                actNum++;
-            }
-            allActivities.add(activities);
-        }
-    }
-
-    public void populateStats() {
-        allStats = new ArrayList<>();
-        for (int i = 0; i < allActivities.size(); i++) {
-            Integer[] stats = getStats(allActivities.get(i));
-            allStats.add(stats);
-        }
-    }
-    */
 }

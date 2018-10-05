@@ -17,22 +17,30 @@ public class Main extends PApplet {
     final int NUM_CLASSES = 5;
     Table table;
     ArrayList<Integer[]> allStats;
-    int sum;
+    int sum = 0;
 
     ArrayList<Table> allFiles;
     ArrayList<String[]> allActivities;
     Day seventeenth;
     boolean drawPie = true;
-    MyRoutine myRoutine;
+    MyRoutine my;
     Day day;
+    Month m;
+
+    boolean pro = false;
+    boolean unpro = false;
+    boolean soc = false;
+    boolean necc = false;
 
     public void settings() {
         size(700, 600);
 
         //seventeenth = new Day("17-09-2018", this);
 
-        String folder = "E:\\Programs\\Java\\Random Programs\\ActivityTracker\\data";
-        day = new Day("16-09-2018", this);
+        String folder = "E:\\Programs\\Java\\Random Programs\\ActivityTracker\\data\\";
+        my = new MyRoutine(folder, this);
+//        m = new Month(7, my.getAllDates(), folder, this);
+//        day = new Day("16-09-2018", folder, this);
 
 //        myRoutine = new MyRoutine(folder, this);
 
@@ -65,7 +73,47 @@ public class Main extends PApplet {
 
     public void draw() {
         background(50);
-        day.makePieChart("low");
+        my.makePieChart();
+//        day.makePieChart();
+//        m.makePieChart();
+        //PieChart.drawOutline(width / 2, height / 2, 200, color(255), 5, this);
+        /*strokeWeight(10);
+        stroke(255);
+        point(400, 350);
+        float radius = (float) ((width / 1.5) / 2);
+        line(350, 300, 350 + radius * (float) Math.cos(0), 300 + radius * (float)Math.sin(0));
+        line(350, 300, 350 + radius * (float) Math.cos(HALF_PI), 300 + radius * (float)Math.sin(HALF_PI));*/
+
+
+        /*ArrayList<String> classes = new ArrayList<>();
+
+
+        if (unpro) {
+            classes.add("unproductive");
+        }
+        if (pro) {
+            classes.add("productive");
+        }
+        if (soc) {
+            classes.add("social");
+        }
+        if (necc) {
+            classes.add("necessities");
+        }
+
+
+
+        String[] arr = new String[classes.size()];
+        for (int i = 0; i < classes.size(); i++) {
+            arr[i] = classes.get(i);
+        }
+//        day.makePieChart(arr);
+        m.makePieChart(arr);*/
+        //        day.makePieChart("low");
+        /*if (drawPie)
+            day.makePieChart("high");
+        else
+            day.makePieChart("low");*/
         //myRoutine.drawPieChartForMonth("August");
         /*if (drawPie)
             myRoutine.drawPieChartForDate("16-09-2018", "high");
@@ -90,15 +138,11 @@ public class Main extends PApplet {
         }*/
     }
 
-
-
-    public Integer[] getStats(String[] activities) {
-        Integer[] stats = new Integer[NUM_CLASSES];
-        for (String activity : activities) {
-            stats[getClassNumber(activity)]++;
-        }
-        return stats;
+    public void mousePressed() {
+        my.handleClick(mouseX, mouseY);
     }
+
+
 
 
 
@@ -111,69 +155,23 @@ public class Main extends PApplet {
         }
     }
 
-    private int getClassNumber(String className) {
-        switch (className) {
-            case "sleep" :
-                return 0;
-            case "eat" :
-                return 1;
-            case "not productive" :
-                return 2;
-            case "practice programming" :
-                return 3;
-            case "project" :
-                return 4;
-            default:
-                return -1;
-        }
-    }
+
 
 
 
 
     public void keyPressed() {
-        if (key == 'a' || key == 'A') {
-            drawPie = false;
-            //myRoutine.drawPieChartForDate("16-09-2018", "low");
-        }
-        if (key == 'b' || key == 'B') {
-            //myRoutine.drawPieChartForDate("16-09-2018", "high");
-            drawPie = true;
+//        if (key == 'a' || key == 'A') {
+//
+//        }
+        if (key == 'd' || key == 'D') {
+            my.next();
         }
     }
 
 
 
-    /*private int getColor(int index) {
 
-     *//*
-        *   #c5cc14
-            197, 204, 20
-            #20299e
-            32, 41, 158
-            #942f83
-            148, 47, 131
-            #570052
-            87, 0, 82
-            #c8a9b1
-            200, 169, 177
-        * *//*
-
-        switch(index) {
-            case 0:
-                return color(197, 204, 20);
-            case 1:
-                return color(32, 41, 158);
-            case 2:
-                return color(148, 47, 131);
-            case 3:
-                return color(87, 0, 82);
-            case 4:
-                return color(200, 169, 177);
-                default:
-                    return color(0, 0, 0);
-        }
-    }*/
 
     public static void main(String[] args) {
 
@@ -186,36 +184,3 @@ public class Main extends PApplet {
     }
 }
 
-/*
-// The following short CSV file called "mammals.csv" is parsed
-// in the code below. It must be in the project's "data" folder.
-//
-// id,species,name
-// 0,Capra hircus,Goat
-// 1,Panthera pardus,Leopard
-// 2,Equus zebra,Zebra
-
-    Table table;
-
-    void setup() {
-
-        table = loadTable("mammals.csv", "header");
-
-        println(table.getRowCount() + " total rows in table");
-
-        for (TableRow row : table.rows()) {
-
-            int id = row.getInt("id");
-            String species = row.getString("species");
-            String name = row.getString("name");
-
-            println(name + " (" + species + ") has an ID of " + id);
-        }
-
-    }
-
-// Sketch prints:
-// 3 total rows in table
-// Goat (Capra hircus) has an ID of 0
-// Leopard (Panthera pardus) has an ID of 1
-// Zebra (Equus zebra) has an ID of 2*/
