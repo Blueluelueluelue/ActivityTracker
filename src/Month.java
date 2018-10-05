@@ -154,7 +154,9 @@ public class Month {
 
     public void handleClick(int mouseX, int mouseY) {
         String theClass = pieChart.clickedInsideClass(mouseX, mouseY);
-        pieChart.includeLowLevelClass(theClass);
+        if (theClass != null) {
+            pieChart.includeLowLevelClass(theClass);
+        }
     }
 
     public boolean hasData() {
