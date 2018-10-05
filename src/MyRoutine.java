@@ -39,21 +39,56 @@ public class MyRoutine {
 
     public void next() {
         if (mode == DAY_MODE) {
-            if (allMonths[monthIndex].isLastDayOfMonth(dayIndex)) {
-                monthIndex = (monthIndex + 1) % allMonths.length;
-                while (!allMonths[monthIndex].hasData()) {
-                    monthIndex = (monthIndex + 1) % allMonths.length;
-                }
-                dayIndex = 0;
-            } else {
-                dayIndex++;
-            }
+            incrementDayIndex();
         } else if (mode == MONTH_MODE) {
-            dayIndex = 0;
+            incrementMonthIndex();
+        }
+    }
+
+    private void incrementDayIndex() {
+        if (dayIndex == allMonths[monthIndex].getLastDay() - 1) {
+            incrementMonthIndex();
+        } else {
+            dayIndex++;
+        }
+    }
+
+    private void incrementMonthIndex() {
+        monthIndex = (monthIndex + 1) % allMonths.length;
+        while (!allMonths[monthIndex].hasData()) {
             monthIndex = (monthIndex + 1) % allMonths.length;
-            while (!allMonths[monthIndex].hasData()) {
-                monthIndex = (monthIndex + 1) % allMonths.length;
+        }
+        dayIndex = 0;
+    }
+
+    private void decrementDayIndex() {
+        if (dayIndex == 0) {
+            decrementMonthIndex();
+            dayIndex = allMonths[monthIndex].getLastDay() - 1;
+        } else {
+            dayIndex--;
+        }
+    }
+
+    private void decrementMonthIndex() {
+        dayIndex = 0;
+        monthIndex--;
+        if (monthIndex < 0) {
+            monthIndex = allMonths.length - 1;
+        }
+        while (!allMonths[monthIndex].hasData()) {
+            monthIndex--;
+            if (monthIndex < 0) {
+                monthIndex = allMonths.length - 1;
             }
+        }
+    }
+
+    public void previous() {
+        if (mode == DAY_MODE) {
+            decrementDayIndex();
+        } else if (mode == MONTH_MODE) {
+            decrementMonthIndex();
         }
     }
 

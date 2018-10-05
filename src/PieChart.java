@@ -8,7 +8,7 @@ public class PieChart {
     private ArrayList<Integer[]> numbers;
     private ArrayList<String[]> labels;
     private ArrayList<Integer[]> colors;
-    private ArrayList<Integer> indicesTooShowLowLevelFor;
+    private ArrayList<Integer> indicesToShowLowLevelFor;
     private int radius;
     private int centerX;
     private int centerY;
@@ -29,7 +29,7 @@ public class PieChart {
         removeRepeatLabelsColors();
 
         this.pAppletObj = pAppletObj;
-        this.indicesTooShowLowLevelFor = new ArrayList<>();
+        this.indicesToShowLowLevelFor = new ArrayList<>();
     }
 
     private void removeRepeatLabelsColors() {
@@ -51,10 +51,10 @@ public class PieChart {
 
     public void includeLowLevelClass(String lowLevelClass) {
         Integer index = getLowLevelClassIndex(lowLevelClass);
-        if (indicesTooShowLowLevelFor.contains(index)) {
-            indicesTooShowLowLevelFor.remove(index);
+        if (indicesToShowLowLevelFor.contains(index)) {
+            indicesToShowLowLevelFor.remove(index);
         } else {
-            indicesTooShowLowLevelFor.add(index);
+            indicesToShowLowLevelFor.add(index);
         }
     }
 
@@ -86,7 +86,7 @@ public class PieChart {
             // if the current class's index is inside the list of indices for which we have to display a low level view
             // then access that index's numbers and display the low level view for that class
             // else continue on with the high level view
-            if (indicesTooShowLowLevelFor.contains(i)) {
+            if (indicesToShowLowLevelFor.contains(i)) {
 
                 // since the high level class's numbers, by definition, are the sum of the low level classes' numbers
                 Integer lowSum = numbers.get(i)[0];
@@ -121,7 +121,7 @@ public class PieChart {
 
         int lineColor = pAppletObj.color(0);
         int textColor = pAppletObj.color(230);
-        label(lineColor, 2, textColor, 18, indicesTooShowLowLevelFor);
+        label(lineColor, 2, textColor, 18, indicesToShowLowLevelFor);
     }
 
     public String clickedInsideClass(int pointX, int pointY) {
@@ -148,7 +148,7 @@ public class PieChart {
         return null;
     }
 
-    public boolean intersects(int pointX, int pointY, float start, float stop) {
+    private boolean intersects(int pointX, int pointY, float start, float stop) {
         int translatedPointX = pointX - centerX;
         int translatedPointY = pointY - centerY;
         int startX = (int) (radius * Math.cos(start));
@@ -266,7 +266,7 @@ public class PieChart {
     }
 
 
-    public static boolean isInside(int centerX, int centerY, int radius, int pointX, int pointY) {
+    private static boolean isInside(int centerX, int centerY, int radius, int pointX, int pointY) {
         int distanceSquared = (int) (Math.pow(centerX - pointX, 2) + Math.pow(centerY - pointY, 2));
         return distanceSquared < radius * radius;
     }

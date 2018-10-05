@@ -159,6 +159,10 @@ public class Month {
         }
     }
 
+    public int getLastDay() {
+        return daysInThisMonth.size();
+    }
+
     public boolean hasData() {
         return daysInThisMonth.size() > 0;
     }
@@ -169,9 +173,5 @@ public class Month {
 
     public Day getDay(int index) {
         return daysInThisMonth.get(index);
-    }
-
-    public boolean isLastDayOfMonth(int index) {
-        return index == daysInThisMonth.size() - 1;
     }
 }
