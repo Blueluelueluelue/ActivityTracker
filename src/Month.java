@@ -10,7 +10,7 @@ public class Month {
     private PApplet pAppletObj;
     private ArrayList<Integer[]> monthStats;
     private ArrayList<String[]> monthClasses;
-    PieChart pieChart;
+    private PieChart pieChart;
 
     public Month(int monthNumber, ArrayList<String> allDates, String filePath, PApplet pAppletObj) {
         this.pAppletObj = pAppletObj;
@@ -140,28 +140,22 @@ public class Month {
         }
     }
 
-    /*private void populateStats() {
-
-        Day day1 = daysInThisMonth.get(0);
-        Integer[] day1Stats = day1.getStats();
-        int numOfClasses = day1Stats.length;
-        monthStats = new Integer[numOfClasses];
-        populateWith(monthStats, 0);
-
-        for (Day day : daysInThisMonth) {
-            Integer[] dayStats = day.getStats();
-            for (int classNum = 0; classNum < dayStats.length; classNum++) {
-                monthStats[classNum] += dayStats[classNum];
-            }
-        }
-    }*/
-
-    public void makePieChart(String...lowLevelFor) {
-        pieChart.draw(lowLevelFor);
+    public void makePieChart() {
+        pieChart.draw();
+        displayMonthName();
     }
 
+    private void displayMonthName() {
+        pAppletObj.pushMatrix();
+        pAppletObj.textSize(15);
+        pAppletObj.text(monthName, 50, 50);
+        pAppletObj.popMatrix();
+    }
 
-
+    public void handleClick(int mouseX, int mouseY) {
+        String theClass = pieChart.clickedInsideClass(mouseX, mouseY);
+        pieChart.includeLowLevelClass(theClass);
+    }
 
     public boolean hasData() {
         return daysInThisMonth.size() > 0;
@@ -170,43 +164,4 @@ public class Month {
     public String getMonthName() {
         return monthName;
     }
-
-   /* public void makePieChart() {
-        int[] colors = new int[]{
-                pAppletObj.color(197, 204, 20),
-                pAppletObj.color(32, 41, 158),
-                pAppletObj.color(148, 47, 131),
-                pAppletObj.color(87, 0, 82),
-                pAppletObj.color(200, 169, 177)
-        };
-        int radius = PApplet.floor((float) ((pAppletObj.width < pAppletObj.height ? pAppletObj.width : pAppletObj.height) / 1.5)) / 2;
-        int centerX = pAppletObj.width / 2;
-        int centerY = pAppletObj.height / 2;
-
-        PieChart.draw(monthStats, colors, radius, centerX, centerY, pAppletObj);
-        PieChart.drawOutline(centerX, centerY, radius, pAppletObj.color(255, 255, 255), 4, pAppletObj);
-        String[] classLabels = new String[]{
-                "Sleep",
-                "Productive",
-                "Unproductive",
-                "Social",
-                "Necessities"
-        };
-        PieChart.label(monthStats, classLabels, centerX, centerY, radius, pAppletObj.color(0, 0, 255), pAppletObj.color(0, 0, 255), 6, 20,  pAppletObj);
-    }*/
-
-    /*public void makePieChartForDate(String date, String level) {
-        for (Day day: daysInThisMonth) {
-            if (day.getDate().equals(date)) {
-                if (level.equals("high")) {
-                    day.makePieChart();
-                } else if (level.equals("low")) {
-                    day.makeLowLevelPieChart();
-                } else {
-                    System.out.println("Don't have the specified level");
-                }
-                break;
-            }
-        }
-    }*/
 }
